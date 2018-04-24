@@ -1,0 +1,25 @@
+{
+  "name": "openbf",
+  "version": "1.0.0",
+  "description": "Implementation of swbf in JS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/RepComm/openbf",
+  "keywords": [
+    "swbf",
+    "implementation",
+    "javascript",
+    "node",
+    "electron"
+  ],
+  "author": "Jonathan Crowder (RepComm)",
+  "license": "Unlicense",
+  "devDependencies": {
+    "electron": "^1.8.4"
+  },
+  "dependencies": {
+    "three": "^0.92.0"
+  }
+}
