@@ -82,27 +82,19 @@ class Client {
         //console.log(this.physicsworld);
         //ENDTEST
         
-        this.updatesPerSecond = 20; //How many times to fire a loop iteration per second
+        this.updatesPerSecond = 30; //How many times to fire a loop iteration per second
         this.resolutionPerSecond = 1000; //Milliseconds
         this.timeBetweenUpdates = this.resolutionPerSecond/this.updatesPerSecond;
         this.timeEnlapsed = 0; //Enlapsed time since last loop iteration
         this.timeNow = 0; //Current time
         this.timeDelta = 0;
         this.timeLast = 0;
+        this.secondTimer = 0;
 
         this.updates = 0;
         
         window.addEventListener("resize", ()=>this.onResize());
         
-        /* Using requestAnimationFrame( ()=>this.onAnimationFrame() )
-         * means we keep 'this' context as this class, instead of event context.
-         * Essentially allowing us to use 'this' keyword within onAnimationFrame function as the Client instance
-         * The problem is that we're creating an arrow function every frame, which is a BAD idea.
-         * Instead, we'll store the arrow function in a variable and just call it every frame, no recreation!
-         * 
-         * Eek out any performance you can, maaan. That was fun, and i learned.
-         * Yeah yeah I know, "What a nerd"
-        */
         this.onAnimationFrameCallback = ()=>this.onAnimationFrame();
         
         window.requestAnimationFrame(this.onAnimationFrameCallback);
@@ -112,12 +104,19 @@ class Client {
         
         //TODO: Logic here
         this.updates++;
+        this.frameRate++;
+        this.secondTimer += this.timeEnlapsed;
+        if (this.secondTimer >= this.resolutionPerSecond) {
+            this.secondTimer = 0;
+            document.title ="FPS:" + this.frameRate;
+            this.frameRate = 0;
+        }
         //console.log(this.sphereBody.position.z);
         if (this.trooper_helmet) {
             this.trooper_helmet.rotation.y += 0.025;
         }
         //This is being funky.. Physics can be simulated, but slows down in velocity. At least it isn't laggy.
-        //this.physicsworld.step(1/60, this.timeEnlapsed, 5);
+        this.physicsworld.step(1/60, this.timeEnlapsed, 5);
         
         this.renderer.render(this.scene, this.camera);
     }
