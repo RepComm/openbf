@@ -1,7 +1,9 @@
 const THREE = require("three");
+const OBJLoader = require("./OBJLoader.js")(THREE);
 const Scene = THREE.Scene;
 const PerspectiveCamera = THREE.PerspectiveCamera;
 const WebGLRenderer = THREE.WebGLRenderer;
+const DirectionalLight = THREE.DirectionalLight;
 
 const CANNON = require("cannon");
 
@@ -22,6 +24,8 @@ class Client {
             0.01, //Near clip
             500, //Far clip
         );
+        this.camera.position.z = 10;
+        console.log(this.camera);
         
         this.renderer = new WebGLRenderer();
         this.renderer.setSize(this.domRect.width, this.domRect.height);
@@ -32,7 +36,30 @@ class Client {
         
         this.physicsworld.broadphase = new CANNON.NaiveBroadphase();
 
+        this.objloader = new OBJLoader();
+        this.objloader.load(
+            "res/models/trooper_helmet.obj",
+            ( object )=> {
+                this.scene.add( object );
+                this.trooper_helmet = object;
+                console.log("Added", object);
+            },
+            function ( xhr ) {
+                //console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            function ( error ) {
+                console.log("Couldn't load the OBJ model..");
+            }
+        );
 
+        this.dirlight = new DirectionalLight(0xffffff, 0.5);
+        this.scene.add(this.dirlight);
+        this.dirlight.position.setZ(5);
+
+        /*let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        let material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        let cube = new THREE.Mesh( geometry, material );
+        this.scene.add( cube );*/
 
         //TEST
         let sphereBody = new CANNON.Body({
@@ -52,7 +79,7 @@ class Client {
         this.physicsworld.addBody(groundBody);
 
         this.maxPhysicsWorldSubsteps = 3;
-        console.log(this.physicsworld);
+        //console.log(this.physicsworld);
         //ENDTEST
         
         this.updatesPerSecond = 20; //How many times to fire a loop iteration per second
@@ -86,7 +113,9 @@ class Client {
         //TODO: Logic here
         this.updates++;
         //console.log(this.sphereBody.position.z);
-        
+        if (this.trooper_helmet) {
+            this.trooper_helmet.rotation.y += 0.025;
+        }
         //This is being funky.. Physics can be simulated, but slows down in velocity. At least it isn't laggy.
         //this.physicsworld.step(1/60, this.timeEnlapsed, 5);
         
