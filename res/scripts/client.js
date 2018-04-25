@@ -87,7 +87,8 @@ class Client {
         this.updates++;
         //console.log(this.sphereBody.position.z);
         
-        this.physicsworld.step(1/60, this.timeEnlapsed, 5);
+        //This is being funky.. Physics can be simulated, but slows down in velocity. At least it isn't laggy.
+        //this.physicsworld.step(1/60, this.timeEnlapsed, 5);
         
         this.renderer.render(this.scene, this.camera);
     }

@@ -11,7 +11,9 @@ let mainWindow;
 function createWindow () {
     mainWindow = new BrowserWindow({
         width: 800,
-        height: 600
+        height: 600,
+        icon: path.join(__dirname, "res", "textures", "icon.png"),
+        show:false
     });
     
     mainWindow.loadURL(url.format({
@@ -20,6 +22,9 @@ function createWindow () {
         slashes: true
     }));
 
+    mainWindow.maximize();
+    mainWindow.show();
+    
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
