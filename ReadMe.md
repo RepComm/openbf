@@ -1,4 +1,4 @@
-# OpenBF
+# OpenBF - [Discord Channel](https://discord.gg/Y38Jn35)
 
 OpenBF is an **implementation** of battlefront (2004).
 You can consider the product a 'fan game,' and the development of it an educational endeavor.
