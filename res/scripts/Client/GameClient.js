@@ -59,8 +59,8 @@ class GameClient {
         window.addEventListener("resize", ()=>this.onResize());
     }
     onUpdate () {
-        this.timeDelta = this.timeEnlapsed / this.timeBetweenUpdates;
-        
+        this.worldAndPhysics.stepPhysics(this.clock.timeDelta);
+
         this.updates++;
         this.frameRate++;
         this.secondTimer += this.timeEnlapsed;

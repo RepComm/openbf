@@ -10,15 +10,33 @@ const path = require("path");
 class WorldAndPhysics {
     constructor () {
         this.pathToWorker = path.resolve(__dirname,"./PhysicsWorker.js");
-        console.log(this.pathToWorker);
+
         this.physicsworker = new Worker(this.pathToWorker);
+
+        this.canStepPhysics = false;
+
         this.physicsworker.onerror = (err)=> {
             console.log("Error", err);
         }
         this.physicsworker.onmessage = (msg)=>{
-            console.log("[WorldAndPhysics] Worker says:", msg.data);
+            //console.log("PhysicsWorker", msg.data.type);
+            if (msg.data.type == "loadscriptfinished") {
+                this.physicsworker.postMessage({type:"start"});
+            }
+            if (msg.data.type == "startfinished") {
+                this.canStepPhysics = true;
+            }
         }
-        this.physicsworker.postMessage("Hello from WorldAndPhysics");
+        this.physicsworker.postMessage({
+            type:"loadscript",
+            scripturl:"../../../node_modules/cannon/build/cannon.js"
+        });
+    }
+
+    stepPhysics (deltaTime) {
+        if (this.canStepPhysics) {
+            this.physicsworker.postMessage({type:"step",deltaTime:deltaTime});
+        }
     }
 }
 

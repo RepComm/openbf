@@ -25,6 +25,7 @@ class LogicClock {
         this.timeEnlapsed = this.timeNow - this.timeLast;
 
         if (this.timeEnlapsed >= this.timeBetweenUpdates) {
+            this.timeDelta = this.timeEnlapsed / this.timeBetweenUpdates;
             this.onUpdate();
             this.timeLast = this.timeNow;
         }
