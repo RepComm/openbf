@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>OpenBF - Client</title>
+        <title>OpenBF - An implementation of SWBF</title>
         <link rel="stylesheet" href="res/styles.css">
         <link rel="icon" href="res/textures/icon.png">
         
@@ -19,7 +19,7 @@
                 <div class="menucontrol">
                     <label class="menucontrolpartleft">Color</label>
                     |
-                    <input class="menucontrolpartright" type="color" value="red" style="margin-right:24%;width:25%;"></input>
+                    <input class="menucontrolpartright" type="color" value="#ff0000" style="margin-right:24%;width:25%;"></input>
                 </div>
                 <div class="menucontrol">
                     <label class="menucontrolpartleft">Clan Tag</label>
@@ -48,13 +48,9 @@
                 </div>
             </div>
         </div>
-
         <script type="text/JavaScript">
-            //require('./renderer.js')
-        </script>
-        
-        <script type="text/JavaScript">
-            require("./res/scripts/client.js");
+            let GameClient = require("./res/scripts/Client/GameClient.js");
+            let instance = new GameClient();
         </script>
     </body>
 </html>

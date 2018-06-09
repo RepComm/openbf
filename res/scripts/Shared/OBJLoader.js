@@ -414,7 +414,7 @@ function OBJLoader (THREE) {
 
             parse: function ( text ) {
 
-                console.time( 'OBJLoader' );
+                //console.time( 'OBJLoader' );
 
                 var state = new ParserState();
 
@@ -788,7 +788,7 @@ function OBJLoader (THREE) {
 
                 }
 
-                console.timeEnd( 'OBJLoader' );
+                //console.timeEnd( 'OBJLoader' );
 
                 return container;
 

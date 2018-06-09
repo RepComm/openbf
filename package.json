@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "cannon": "^0.6.2",
+    "nodemsh": "git+https://github.com/RepComm/nodemsh.git",
     "three": "^0.92.0"
   }
 }
