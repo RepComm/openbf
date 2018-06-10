@@ -1,5 +1,9 @@
+
+const path = require("path");
+
 const THREE = require("three");
-const OBJLoader = require("../Shared/OBJLoader")(THREE);
+const OBJLoader = require("../Shared/OBJLoader");
+const MTLLoader = require("./MTLLoader");
 const Scene = THREE.Scene;
 const PerspectiveCamera = THREE.PerspectiveCamera;
 const WebGLRenderer = THREE.WebGLRenderer;
@@ -31,20 +35,32 @@ class GameClient {
         this.renderer.setSize(this.domRect.width, this.domRect.height);
         this.domContainer.appendChild(this.renderer.domElement);
 
-        this.objloader = new OBJLoader();
-        this.objloader.load(
-            "res/models/trooper_helmet.obj",
-            ( object )=> {
-                this.scene.add( object );
-                this.trooper_helmet = object;
-            },
-            function ( xhr ) {
-                //console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-            },
-            function ( error ) {
-                console.log("Couldn't load the OBJ model..");
-            }
-        );
+        this.mtlLoader = new MTLLoader();
+
+        //let modelsPath = path.resolve(__dirname, "../../models");
+        this.mtlLoader.setPath("res/models/");
+        this.mtlLoader.load("trooper_helmet.mtl", (materials)=>{
+            materials.preload();
+            this.objLoader = new OBJLoader();
+            
+            this.objLoader.setMaterials(materials);
+
+            this.objLoader.setPath("res/models/");
+            this.objLoader.load(
+                "/trooper_helmet.obj",
+                ( object )=> {
+                    this.scene.add( object );
+                    this.trooper_helmet = object;
+                    this.trooper_helmet.scale.setX(4).setY(4).setZ(4);
+                },
+                function ( xhr ) {
+                    //console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                },
+                function ( error ) {
+                    console.log("Couldn't load the OBJ model..");
+                }
+            );
+        });
 
         this.dirlight = new DirectionalLight(0xffffff, 0.5);
         this.scene.add(this.dirlight);
