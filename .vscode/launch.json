@@ -6,13 +6,6 @@
     "configurations": [
         
         {
-            "type": "chrome",
-            "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "webRoot": "${workspaceFolder}"
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Electron Main",
@@ -28,6 +21,13 @@
 			},
             "protocol": "inspector",
             "console":"integratedTerminal"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

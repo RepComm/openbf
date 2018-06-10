@@ -11,6 +11,7 @@ const DirectionalLight = THREE.DirectionalLight;
 
 const LogicClock = require("../Shared/LogicClock");
 const WorldAndPhysics = require("./WorldAndPhysics");
+const BundleManager = require("../Shared/BundleManager");
 
 function elem (id) {
     return document.getElementById(id);
@@ -51,7 +52,7 @@ class GameClient {
                 ( object )=> {
                     this.scene.add( object );
                     this.trooper_helmet = object;
-                    this.trooper_helmet.scale.setX(4).setY(4).setZ(4);
+                    this.trooper_helmet.scale.setX(2).setY(2).setZ(2);
                 },
                 function ( xhr ) {
                     //console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
@@ -71,6 +72,16 @@ class GameClient {
         this.clock.start();
 
         this.worldAndPhysics = new WorldAndPhysics();
+
+        this.loadedBundles = undefined;
+        this.bundleManager = new BundleManager(this);
+
+        this.bundleManager.importBundles("./bundles", (bundles)=>{
+            for (let i=0; i<bundles.length; i++) {
+                bundles[i].onReady();
+                //console.log(bundles[i]);
+            }
+        });
 
         window.addEventListener("resize", ()=>this.onResize());
     }
