@@ -1,0 +1,121 @@
+Star Wars Battlefront II (2005) Multiplayer Protocol
+
+General:
+All communication between gameserver and client is done via UDP. Packets are "bit-packed".
+This means that the data is not aligned to the byte borders making it unreadable for humans.
+
+SWBF2 segments data into 32-bit "chunks". Sometimes data is aligned to a chunk border by adding 0-padding.
+If a packet's lenght is not a multiple of 32bits, 0-padding will be added at the end of the packet.
+
+---
+
+Packet frame:
+
+(UInt8)		message ID
+(UInt16)	sequence ID (set to 0xffff for c2s)
+(UInt8)		? static 0
+(UInt8)		? 1 (s2c) or 0 (c2s)
+
+---
+
+String format:
+(UInt8) 	string length
+(UInt8[])	string as char array, Win-1252 encoded
+
+---
+
+IP-Endpoint format:
+
+(UInt8[])	IPv4 WAN address
+(UInt16)	port number
+(bool)		has_local
+if(has_local) {
+(bool)		???
+(UInt8[])	IPv4 LAN address
+(UInt16)	port number
+}
+
+---
+
+Packet 0x04 - connection request packet
+
+(UInt12) 	client version (0: 1.0, 1: 1.1<)
+(UInt3)		"guest" count
+(UInt32)	CRC checksum of password, 0 if no password
+(UInt2)		???
+(String)	Playername
+(PAD)		padding to chunk border
+(UInt8[4])	??? (seems to be 0 all the time)
+
+for each guest {
+(String)	guest name
+}
+
+(UInt32)	??? (set to 0, does some stuff if != 0)
+
+for each guest {
+(UInt32) 	??? (set to 0, does some stuff if != 0)
+}
+
+(bool)		has crash
+if(has_crash) {
+(UInt32)	crash memory offset
+}
+
+(bool)		???
+(bool)		???
+(PAD)		padding to chunk border
+(IPEP)		client endpoint
+(PAD)		padding to chunk border	
+(IPEP)		server endpoint
+(bool)		???
+(UInt32)	??? (is set to 0x30303031 if 0, set to 0)
+(PAD)		padding to chunk border	
+
+Notes:
+- The "crash" concept seems to be some kind of client error logging.
+  When a client sends a crash address, the server will write it to a file called 
+  "crashes.txt" ("player %s had crash at 0x%x\n")
+
+00000000  04 ff ff 00 00 01 00 00  00 00 80 0c 98 ca 96 ca   ........ ........
+00000010  d6 e6 00 00 00 00 00 00  00 b4 fd a9 f1 06 00 00   ........ ........
+00000020  00 00 00 08 18 f5 3d 60  c9 a1 20 81 70 a0 c9 01   ......=` .. .p...
+00000030  00 00 00 00 00                                     .....
+
+---
+
+Packet 0x05 - join error packet
+
+(UInt4)		join error code
+(PAD)		padding to chunk border
+
+Error codes:
+0 - ifs.mp.joinerrors.banned
+1 - ifs.mp.joinerrors.full
+2 - ifs.mp.joinerrors.password
+3 - ifs.mp.joinerrors.game
+4 - ifs.mp.joinerrors.version
+5 - ifs.mp.joinerrors.booted
+6 - ifs.mp.joinerrors.connectlost
+7 - ifs.mp.joinerrors.missingdc
+8 - ifs.mp.joinerrors.cdkey
+9 - ifs.mp.joinerrors.doesnotexist
+A - ifs.mp.joinerrors.cantconnect
+
+00000000  05 00 00 00 01 02 00 00  00                        ........ .
+
+---
+
+Packet 0x06 - join packet
+
+(UInt6)		???
+(UInt8)		???
+(IPEP)		client endpoint
+(bool)		has_drag
+if(has_drag) {
+(UInt12) 	latency
+(UInt12) 	bandwidth
+(UInt7)		loss
+(UInt7)		jitter
+}
+
