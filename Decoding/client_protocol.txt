@@ -6,6 +6,7 @@ This means that the data is not aligned to the byte borders making it unreadable
 
 SWBF2 segments data into 32-bit "chunks". Sometimes data is aligned to a chunk border by adding 0-padding.
 If a packet's lenght is not a multiple of 32bits, 0-padding will be added at the end of the packet.
+Note that the first chunk begins at the first payload bit. The packet header must not be included when aligning to chunk borders.
 
 ---
 
@@ -64,9 +65,7 @@ if(has_crash) {
 
 (bool)		???
 (bool)		???
-(PAD)		padding to chunk border
 (IPEP)		client endpoint
-(PAD)		padding to chunk border	
 (IPEP)		server endpoint
 (bool)		???
 (UInt32)	??? (is set to 0x30303031 if 0, set to 0)
@@ -77,10 +76,10 @@ Notes:
   When a client sends a crash address, the server will write it to a file called 
   "crashes.txt" ("player %s had crash at 0x%x\n")
 
-00000000  04 ff ff 00 00 01 00 00  00 00 80 0c 98 ca 96 ca   ........ ........
-00000010  d6 e6 00 00 00 00 00 00  00 b4 fd a9 f1 06 00 00   ........ ........
-00000020  00 00 00 08 18 f5 3d 60  c9 a1 20 81 70 a0 c9 01   ......=` .. .p...
-00000030  00 00 00 00 00                                     .....
+04 ff ff 00 00 01 00 00  00 00 80 0c 98 ca 96 ca
+d6 e6 00 00 00 00 00 00  00 00 00 00 00 de 42 c4
+e5 07 00 08 18 f5 3d 60  c9 21 f8 6d 31 5c c9 01
+00 00 00 00 00
 
 ---
 
@@ -106,16 +105,117 @@ A - ifs.mp.joinerrors.cantconnect
 
 ---
 
-Packet 0x06 - join packet
+Packet 0x06 - join accept packet
 
-(UInt6)		???
-(UInt8)		???
+(UInt6)		assigned slot
+(UInt3)		guest count
 (IPEP)		client endpoint
-(bool)		has_drag
-if(has_drag) {
+(bool)		has_netinfo
+if(has_netinfo) {
 (UInt12) 	latency
 (UInt12) 	bandwidth
 (UInt7)		loss
 (UInt7)		jitter
 }
+//NOTE: there seems to be additional engine code here which is unreachable for SWBF2
+(bool)		???
+(UInt2)		???
+(bool)		has_x
+if(has_x) {
+(Uint6)		???
+}
+(bool)		???
+(bool)		has_challenge
+(String)	challenge
+(Uint4)		???
+(bool)		has_y
+if(has_y) {
+(bool)		???
+}
+(UInt10)	???
+(UInt12)	???	(I have a really strong suspicion that this is some sort of bw limiter)
+(UInt12)	??? (maybe experiment with /bandwidth and /throttle a bit)
+for(i = 1; i < 65; i++) {
+(bool)		has_player
+if(has_player) {
+(bool)		has_ai
+if(!has_ai) {
+(UInt10)	ping
+(UInt12)	Score
+(UInt12)	Kills
+}else{
+(UInt6)		???
+}
+}
+
+(bool)		has_details
+if(has_details) {
+(String)	name
+(bool)		???
+(bool)		???
+(bool)		!is_host
+(PAD)		padding to chunk border
+(UInt32)	Gamspy Profile ID
+}
+
+if(!has_ai) {
+(IPEP)		ClientEndPoint
+}
+}
+NOTE: probably game setup stuff like scores, timer etc.
+(bool)		???
+(UInt21)	???
+(UInt32)	???
+(UInt32)	???
+(UInt32)	???
+(String)	map name
+(UInt32)	???
+(UInt32)	???
+while(z != 0) {
+(UInt32)	z
+}
+(UInt32)	???
+(UInt10)	???
+(UInt3)		???
+(PAD)		padding to chunk border
+
+---
+
+Packet 0x07 - challenge response packet
+
+(String)	player name
+(bool)		???
+(bool)		???
+(bool)		???
+(String)	server name
+(String)	map name
+(UInt16)	???
+(UInt24)	??? (sequenced)
+while(has_player)
+{
+(bool)		has_player
+(UInt6)		slot
+(PAD)		padding to chunk border
+(UInt32)	GameSpy ID
+}
+(bool)		has_challenge_response
+if(has_challenge_response) {
+(String)	challenge response
+}
+
+---
+
+Packet 0x08 - game setup packet
+
+---
+
+Packet 0x11 - ???
+11 ff ff 00 00 00 00 00  00
+
+---
+
+Packet 0x14 - ???
+
+(bool)		???
+(UInt8[4])	???
 
