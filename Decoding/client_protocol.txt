@@ -8,6 +8,8 @@ SWBF2 segments data into 32-bit "chunks". Sometimes data is aligned to a chunk b
 If a packet's lenght is not a multiple of 32bits, 0-padding will be added at the end of the packet.
 Note that the first chunk begins at the first payload bit. The packet header must not be included when aligning to chunk borders.
 
+TODO: assuming that every int is unsigned for now - this is obviously not always correct.
+
 ---
 
 Packet frame:
@@ -21,7 +23,7 @@ Packet frame:
 
 String format:
 (UInt8) 	string length
-(UInt8[])	string as char array, Win-1252 encoded
+(char[])	string as char array, Win-1252 encoded
 
 ---
 
@@ -127,7 +129,7 @@ if(has_x) {
 (bool)		???
 (bool)		has_challenge
 (String)	challenge
-(Uint4)		???
+(UInt4)		???
 (bool)		has_y
 if(has_y) {
 (bool)		???
@@ -203,9 +205,37 @@ if(has_challenge_response) {
 (String)	challenge response
 }
 
+TODO ...
+Note: server seems to accept this packet as is even though theres still some payload missing
+
 ---
 
 Packet 0x08 - game setup packet
+
+(bool)		team 1 auto assign
+(bool)		team 2 auto assign
+(bool)		???
+(UInt32)	???
+(UInt32)	???
+(String)	map name
+(UInt32)	session id
+(bool)		enable_heroes
+if(enable_heroes) {
+(UInt3)		herounlock
+(UInt9)		herounlockvalue
+(UInt2)		heroplayer
+(UInt2)		herorespawn
+(UInt9)		herorespawnvalue
+}
+(UInt8)		kick player majority
+(bool)		enable ff
+(bool)		enable autoaim
+(UInt8)		spawn protection
+(bool)		show names
+
+(bool)		???
+
+TODO ...
 
 ---
 
@@ -218,4 +248,27 @@ Packet 0x14 - ???
 
 (bool)		???
 (UInt8[4])	???
+
+---
+
+Packet 0x0C - ???
+
+1c 08 00  00 00 00 00 00 00 00 00   ........ ........
+    00000DE3  fc 01 6a 80 03 18 fe bf  d6 fe ff 92 70 4b fb 33   ..j..... ....pK.3
+    00000DF3  d6 81 38 f9 8f ff 07 a0  d3 06 f4 7f 74 da 80 fe   ..8..... ....t...
+    00000E03  0f e0 ff ff fb ff ff fe  ff bf f0 7f fa fd 7e bf   ........ ......~.
+    00000E13  ff 07 00 00 00 00 00 00  00 00 00 00 00 c0 00 fe   ........ ........
+    00000E23  bf d6 fe ff 92 70 68 fc  13 27 81 1b 00 90 ff 27   .....ph. .'.....'
+    00000E33  00 3a 6d 40 ff 47 a7 0d  e8 ff 00 fe ff bf ff ff   .:m@.G.. ........
+    00000E43  ef ff ff 2b f0 7f 86 df  ef f7 fb 7f 00 00 00 00   ...+.... ........
+    00000E53  00 00 00 00 00 00 00 00  1c 10 42 c0 c0 55 fa b0   ........ ..B..U..
+    00000E63  fe 45 07 a4 33 81 7c d8  4f 14 f6 9f 82 11 00 3c   .E..3.|. O......<
+    00000E73  c0 ff 0c 17 00 80 ff ff  f7 ef df bf df ef f7 fb   ........ ........
+    00000E83  7f 10 08 1a c0 2c 10 27  79 64 69 0b 8c b7 82 6e   .....,.' ydi....n
+    00000E93  0c 50 e7 39 ff 59 0d 00  cc cc ff 9a 11 00 80 ff   .P.9.Y.. ........
+    00000EA3  ff f7 0f e3 bf df ef f7  fb 7f 12 f0 2b 00 58 00   ........ ....+.X.
+    00000EB3  00 18 00 00 08 43 86 06  00 0e 00 00 90 03 00 00   .....C.. ........
+    00000EC3  80 32 33 2b 08 80 07 00  08 00 22 00 00 00 00 ff   .23+.... ..".....
+    00000ED3  ff 48 00 e0 32 4c 00 00  00                        .H..2L.. .
+
 
