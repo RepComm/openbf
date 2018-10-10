@@ -1,7 +1,0 @@
-{
-    "name": "defaultplayer",
-    "description": "The default 'player' code I wrote",
-    "displayName": "Player Bundle",
-    "main": "main.js",
-    "class": "DefaultPlayer"
-}
