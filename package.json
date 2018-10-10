@@ -1,0 +1,25 @@
+{
+  "name": "node-openbf-networking",
+  "version": "1.0.0",
+  "description": "Networking code for openbf project",
+  "main": "node-openbf-networking.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/node-openbf-project/node-openbf-networking.git"
+  },
+  "keywords": [
+    "node",
+    "openbf",
+    "networking",
+    "modules"
+  ],
+  "author": "RepComm, jweigelt",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/node-openbf-project/node-openbf-networking/issues"
+  },
+  "homepage": "https://github.com/node-openbf-project/node-openbf-networking#readme"
+}
